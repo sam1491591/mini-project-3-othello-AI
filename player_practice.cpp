@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <climits>
 
 struct Point
 {
@@ -36,8 +37,19 @@ const std::array<Point, 8> directions{{
 
 std::array<int, 3> disc_count;
 
-
-
+int estimate[8][8]={1000, -200, 70, 60, 60, 70, -200, 1000, -200, -500, 3, 3, 3, 3, -500, -200, 70, 3, 25, 4, 4, 25, 3, 70, 60, 3, 4, 0, 0, 4, 3, 60, 60, 3, 4, 0, 0, 4, 3, 60, 70, 3, 25, 4, 4, 25, 3, 70, -200, -500, 3, 3, 3, 3, -500, -20, 1000, -200, 70, 60, 60, 70, -200, 1000};
+/*
+{
+    90,-60,10,10,10,10,-60,90,
+    -60,-80,5,5,5,5,-80,-60,
+    10,5,1,1,1,1,5,10,
+    10,5,1,1,1,1,5,10,
+    10,5,1,1,1,1,5,10,
+    10,5,1,1,1,1,5,10,
+    -60,-80,5,5,5,5,-80,-60,
+    90,-60,10,10,10,10,-60,90
+};
+*/
 int player;
 const int SIZE = 8;
 std::array<std::array<int, SIZE>, SIZE> board;
@@ -154,9 +166,7 @@ void write_valid_spot(std::ofstream& fout)
             }
         }
         value=p1-p2;
-        if(t.x==0||t.x==7)
-            if(t.y==0||t.y==7)
-                value+=10;
+        value+=estimate[t.x][t.y];
         if(value>max)
         {
             max=value;
@@ -189,9 +199,7 @@ void write_valid_spot(std::ofstream& fout)
                 }
             }
             value2=second_p2-second_p1;
-            if(t2.x==0||t2.x==7)
-                if(t2.y==0||t2.y==7)
-                    value2+=10;
+            value2+=estimate[t2.x][t2.y];
             if(value2>max2)
             {
                 max2=value2;
