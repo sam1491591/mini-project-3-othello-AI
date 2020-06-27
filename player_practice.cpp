@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <climits>
 
 struct Point
 {
@@ -36,7 +37,17 @@ const std::array<Point, 8> directions{{
 
 std::array<int, 3> disc_count;
 
-
+int estimate[8][8]=
+{
+    90,-60,10,10,10,10,-60,90,
+    -60,-80,5,5,5,5,-80,-60,
+    10,5,1,1,1,1,5,10,
+    10,5,1,1,1,1,5,10,
+    10,5,1,1,1,1,5,10,
+    10,5,1,1,1,1,5,10,
+    -60,-80,5,5,5,5,-80,-60,
+    90,-60,10,10,10,10,-60,90
+};
 
 int player;
 const int SIZE = 8;
@@ -145,8 +156,8 @@ void write_valid_spot(std::ofstream& fout)
                     for (Point s: discs) {
                         second_board[s.x][s.y]=player;
                     }
-                    p1 += discs.size();
-                    p2 -= discs.size();
+                    p1 += 2*discs.size();
+                    p2 -= 2*discs.size();
                     break;
                 }
                 discs.push_back(p);
@@ -154,9 +165,7 @@ void write_valid_spot(std::ofstream& fout)
             }
         }
         value=p1-p2;
-        if(t.x==0||t.x==7)
-            if(t.y==0||t.y==7)
-                value+=10;
+        value+=estimate[t.x][t.y];
         if(value>max)
         {
             max=value;
@@ -180,8 +189,8 @@ void write_valid_spot(std::ofstream& fout)
                 {
                     if (second_board[second_p.x][second_p.y]==3-player)
                     {
-                        second_p1 -= second_discs.size();
-                        second_p2 += second_discs.size();
+                        second_p1 -= 2*second_discs.size();
+                        second_p2 += 2*second_discs.size();
                         break;
                     }
                     second_discs.push_back(second_p);
@@ -189,9 +198,7 @@ void write_valid_spot(std::ofstream& fout)
                 }
             }
             value2=second_p2-second_p1;
-            if(t2.x==0||t2.x==7)
-                if(t2.y==0||t2.y==7)
-                    value2+=10;
+            value2+=estimate[t2.x][t2.y];
             if(value2>max2)
             {
                 max2=value2;
