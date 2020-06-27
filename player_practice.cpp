@@ -4,7 +4,6 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
-#include <climits>
 
 struct Point
 {
@@ -37,17 +36,7 @@ const std::array<Point, 8> directions{{
 
 std::array<int, 3> disc_count;
 
-int estimate[8][8]=
-{
-    90,-60,10,10,10,10,-60,90,
-    -60,-80,5,5,5,5,-80,-60,
-    10,5,1,1,1,1,5,10,
-    10,5,1,1,1,1,5,10,
-    10,5,1,1,1,1,5,10,
-    10,5,1,1,1,1,5,10,
-    -60,-80,5,5,5,5,-80,-60,
-    90,-60,10,10,10,10,-60,90
-};
+
 
 int player;
 const int SIZE = 8;
@@ -165,7 +154,9 @@ void write_valid_spot(std::ofstream& fout)
             }
         }
         value=p1-p2;
-        value+=estimate[t.x][t.y];
+        if(t.x==0||t.x==7)
+            if(t.y==0||t.y==7)
+                value+=10;
         if(value>max)
         {
             max=value;
@@ -198,7 +189,9 @@ void write_valid_spot(std::ofstream& fout)
                 }
             }
             value2=second_p2-second_p1;
-            value2+=estimate[t2.x][t2.y];
+            if(t2.x==0||t2.x==7)
+                if(t2.y==0||t2.y==7)
+                    value2+=10;
             if(value2>max2)
             {
                 max2=value2;
