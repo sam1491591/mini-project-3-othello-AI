@@ -145,6 +145,8 @@ int calculate(state cur,int depth,int player1,int player2,std::vector<Point> nex
                 next.first_board[i][j]=cur.second_board[i][j];
         next.player=3-cur.player;
         second_valid_spots=get_valid_spots(next);
+        if(p1-p2+80<max)
+            return -INT_MAX;
         cur.value=p1-p2-calculate(next,depth-1,p2,p1,second_valid_spots);
         cur.value+=estimate[t.x][t.y];
         //cur.value+=estimate[t.x][t.y];
