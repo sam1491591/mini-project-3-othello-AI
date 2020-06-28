@@ -154,11 +154,30 @@ int calculate(state cur,int depth,int player1,int player2,std::vector<Point> nex
         */
         if(second_valid_spots.size()==0)
         {
-            if(depth%2==0)
-                cur.value=1000;
+            if(depth==4)
+                ans=t;
+            else if(depth%2==0)
+                return 1000;
             else
-                cur.value=-1000;
+                return -1000;
         }
+        /*
+        int tmp;
+        if(depth%2==0)
+        {
+            tmp=calculate(next,depth-1,p2,p1,second_valid_spots,alpha,beta);
+            if(tmp>alpha)
+                alpha=tmp;
+            cur.value=p1-p2-tmp;
+        }
+        else
+        {
+            tmp=-calculate(next,depth-1,p2,p1,second_valid_spots,alpha,beta);
+            if(tmp<beta)
+                beta=tmp;
+            cur.value=p1-p2+tmp;
+        }
+        */
         cur.value=p1-p2-calculate(next,depth-1,p2,p1,second_valid_spots);
         cur.value+=estimate[t.x][t.y];
         cur.value-=2*second_valid_spots.size();
@@ -169,6 +188,10 @@ int calculate(state cur,int depth,int player1,int player2,std::vector<Point> nex
                 ans=t;
             max=cur.value;
         }
+        /*
+        if(alpha<beta)
+            return max;
+        */
     }
     return max;
 }
