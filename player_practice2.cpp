@@ -130,8 +130,8 @@ int calculate(state cur,int depth,int player1,int player2,std::vector<Point> nex
                     for (Point s: discs) {
                         cur.second_board[s.x][s.y]=cur.player;
                     }
-                    p1 += 2*discs.size();
-                    p2 -= 2*discs.size();
+                    //p1 += discs.size();
+                    //p2 -= discs.size();
                     break;
                 }
                 discs.push_back(p);
@@ -145,10 +145,23 @@ int calculate(state cur,int depth,int player1,int player2,std::vector<Point> nex
                 next.first_board[i][j]=cur.second_board[i][j];
         next.player=3-cur.player;
         second_valid_spots=get_valid_spots(next);
-        if(p1-p2+estimate[t.x][t.y]<max&&p1-p2+estimate[t.x][t.y]<0)
-            return -INT_MAX;
+        /*
+        if(second_valid_spots.size()>10)
+            cur.value=1000;
+        else if(second_valid_spots.size()==0)
+            cur.value=-1000;
+        else
+        */
+        if(second_valid_spots.size()==0)
+        {
+            if(depth%2==0)
+                cur.value=1000;
+            else
+                cur.value=-1000;
+        }
         cur.value=p1-p2-calculate(next,depth-1,p2,p1,second_valid_spots);
         cur.value+=estimate[t.x][t.y];
+        cur.value-=2*second_valid_spots.size();
         //cur.value+=estimate[t.x][t.y];
         if(cur.value>max)
         {
