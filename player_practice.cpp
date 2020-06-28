@@ -28,7 +28,6 @@ struct Point
         return Point(x - rhs.x, y - rhs.y);
     }
 };
-
 const std::array<Point, 8> directions{{
         Point(-1, -1), Point(-1, 0), Point(-1, 1),
         Point(0, -1), /*{0, 0}, */Point(0, 1),
@@ -49,13 +48,13 @@ int estimate[8][8]=
     90,-60,10,10,10,10,-60,90
 };
 
+
 int player;
 const int SIZE = 8;
 std::array<std::array<int, SIZE>, SIZE> board;
 std::array<std::array<int, SIZE>, SIZE> second_board;
 std::vector<Point> next_valid_spots;
 std::vector<Point> second_valid_spots;
-
 void read_board(std::ifstream& fin)
 {
     fin >> player;
@@ -69,7 +68,6 @@ void read_board(std::ifstream& fin)
         }
     }
 }
-
 void read_valid_spots(std::ifstream& fin)
 {
     int n_valid_spots;
@@ -81,7 +79,6 @@ void read_valid_spots(std::ifstream& fin)
         next_valid_spots.push_back({ x, y });
     }
 }
-
 bool is_spot_valid(Point center)
 {
     if (second_board[center.x][center.y] != 0)
@@ -102,7 +99,6 @@ bool is_spot_valid(Point center)
     }
     return false;
 }
-
 std::vector<Point> get_valid_spots()
 {
     std::vector<Point> valid_spots;
@@ -119,12 +115,10 @@ std::vector<Point> get_valid_spots()
     }
     return valid_spots;
 }
-
 void write_valid_spot(std::ofstream& fout)
 {
     //int n_valid_spots = next_valid_spots.size();
     //srand(time(NULL));
-
     // Choose random spot. (Not random uniform here)
     //int index = (rand() % n_valid_spots);
     //Point p = next_valid_spots.front();
@@ -134,15 +128,13 @@ void write_valid_spot(std::ofstream& fout)
     Point ans;
     for (Point t : next_valid_spots)
     {
+        for(int i=0;i<SIZE;i++)
+            for(int j=0;j<SIZE;j++)
+                second_board[i][j]=board[i][j];
         p1=disc_count[player]+1,p2=disc_count[3-player];
         max2=-INT_MAX;
         for (Point dir: directions)
         {
-            for(int i=0;i<SIZE;i++)
-                for(int j=0;j<SIZE;j++)
-                {
-                    second_board[i][j]=board[i][j];
-                }
             // Move along the direction while testing.
             Point p = t + dir;
             if (board[p.x][p.y]!=3-player)
@@ -156,8 +148,8 @@ void write_valid_spot(std::ofstream& fout)
                     for (Point s: discs) {
                         second_board[s.x][s.y]=player;
                     }
-                    p1 += 2*discs.size();
-                    p2 -= 2*discs.size();
+                    p1 += discs.size();
+                    p2 -= discs.size();
                     break;
                 }
                 discs.push_back(p);
@@ -166,6 +158,9 @@ void write_valid_spot(std::ofstream& fout)
         }
         value=p1-p2;
         value+=estimate[t.x][t.y];
+        if(t.x==0||t.x==7)
+            if(t.y==0||t.y==7)
+                value+=10;
         if(value>max)
         {
             max=value;
@@ -189,8 +184,8 @@ void write_valid_spot(std::ofstream& fout)
                 {
                     if (second_board[second_p.x][second_p.y]==3-player)
                     {
-                        second_p1 -= 2*second_discs.size();
-                        second_p2 += 2*second_discs.size();
+                        second_p1 -= second_discs.size();
+                        second_p2 += second_discs.size();
                         break;
                     }
                     second_discs.push_back(second_p);
@@ -199,6 +194,9 @@ void write_valid_spot(std::ofstream& fout)
             }
             value2=second_p2-second_p1;
             value2+=estimate[t2.x][t2.y];
+            if(t2.x==0||t2.x==7)
+                if(t2.y==0||t2.y==7)
+                    value2+=10;
             if(value2>max2)
             {
                 max2=value2;
@@ -216,8 +214,6 @@ void write_valid_spot(std::ofstream& fout)
     fout << ans.x << " " << ans.y << std::endl;
     fout.flush();
 }
-
-
 int main(int, char** argv)
 {
     std::ifstream fin(argv[1]);
